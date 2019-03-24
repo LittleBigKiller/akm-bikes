@@ -72,6 +72,7 @@ window.onkeyup = function(e) {
 window.onload = function() {
     document.getElementById('pregame-start').onclick = function() {
         document.getElementById('pregame-controls').style.display = 'none'
+        maxLaps = document.getElementById('pregame-lap-count').value
         initGame(document.getElementById('pregame-player-count').value)
     }
 }
