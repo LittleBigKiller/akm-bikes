@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Bike thingy</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="/css/style.css">
+    <script src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="pregame-controls">
+        <label>
+        How many players?
+        <select id="pregame-player-count">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+        </select>
+        </label>
+        <button id="pregame-start" type="button">START GAME</button>
+    </div>
+    <div id="lap-counter-container">
+        <h1 id="lap-counter-p0" style="display: none">
+            lap-counter
+        </h1>
+        <h1 id="lap-counter-p1" style="display: none">
+            lap-counter
+        </h1>
+        <h1 id="lap-counter-p2" style="display: none">
+            lap-counter
+        </h1>
+        <h1 id="lap-counter-p3" style="display: none">
+            lap-counter
+        </h1>
+    </div>
+    <canvas id="canvas" width="1280" height="720" style="display: none"></canvas>
+</body>
+
+</html>
