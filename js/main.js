@@ -87,15 +87,15 @@ function initGame(playerCount) {
     for (let i = 0; i < playerCount; i++)
         createPlayer()
     
-    drawMapInit()
+    drawMap()
     draw()
     window.alert('Naciśnij OK, żeby zacząć')
 }
 
 //#region Map Drawing
-function drawMapInit() {
+function drawMap() {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
-    ctx.strokeStyle = '#000000'
+    ctx.strokeStyle = '#FFFFFF'
     ctx.lineWidth = 2
 
     // Poza drogą
@@ -104,33 +104,6 @@ function drawMapInit() {
     
     // Droga
     ctx.fillStyle = '#888888'
-    ctx.beginPath()
-    ctx.arc(canvas.height / 2, canvas.height / 2, canvas.height / 2 - 10, Math.PI / 2, 3 * Math.PI / 2)
-    ctx.arc(canvas.width - canvas.height / 2, canvas.height / 2, canvas.height / 2 - 10, 3 * Math.PI / 2, Math.PI / 2)
-    ctx.closePath()
-    ctx.fill()
-    ctx.stroke()
-
-    // Środek
-    ctx.fillStyle = '#55AA00'
-    ctx.beginPath()
-    ctx.arc(canvas.height / 2, canvas.height / 2, 170, Math.PI / 2, 3 * Math.PI / 2)
-    ctx.arc(canvas.width - canvas.height / 2, canvas.height / 2, 170, 3 * Math.PI / 2, Math.PI / 2)
-    ctx.closePath()
-    ctx.fill()
-    ctx.stroke()
-
-    // Linia startu
-    ctx.strokeStyle = '#FFFFFF'
-    ctx.lineWidth = 8
-    ctx.beginPath()
-    ctx.moveTo(canvas.width - canvas.height / 2, 3 * canvas.height / 4 - 9)
-    ctx.lineTo(canvas.width - canvas.height / 2, canvas.height - 11)
-    ctx.stroke()
-}
-function drawMap() {
-    // Droga
-    ctx.fillStyle = '#8888882E'
     ctx.beginPath()
     ctx.arc(canvas.height / 2, canvas.height / 2, canvas.height / 2 - 10, Math.PI / 2, 3 * Math.PI / 2)
     ctx.arc(canvas.width - canvas.height / 2, canvas.height / 2, canvas.height / 2 - 10, 3 * Math.PI / 2, Math.PI / 2)
@@ -167,9 +140,41 @@ function draw() {
                 players[i].updateVel(0.1)
             if (players[i].turnR)
                 players[i].updateVel(-0.1)
+
+            ctx.fillStyle = players[i].color + '1F'
+            for (let j = 0; j < players[i].trail.length; j++) {
+                ctx.beginPath()
+                ctx.arc(players[i].trail[j].x, players[i].trail[j].y, imgSize, 0, 2* Math.PI)
+                ctx.fill()
+            }
             
             players[i].x += players[i].vx
             players[i].y += players[i].vy
+
+            players[i].trail.unshift({x: players[i].x, y: players[i].y})
+            if (players[i].trail.length == 128) players[i].trail.pop()
+
+            /**/
+            
+            /**
+            ctx.beginPath()
+            ctx.lineWidth = 3 * imgSize / 2
+            ctx.strokeStyle = players[i].color + '9F'
+            for (let j = 0; j < players[i].trail.length; j++) {
+                ctx.lineTo(players[i].trail[j].x, players[i].trail[j].y)
+                if (j == 32) {
+                    ctx.stroke()
+                    ctx.strokeStyle = players[i].color + '7F'
+                } else if (j == 64) {
+                    ctx.stroke()
+                    ctx.strokeStyle = players[i].color + '5F'
+                } else if (j == 96) {
+                    ctx.stroke()
+                    ctx.strokeStyle = players[i].color + '3F'
+                }
+            }
+            ctx.stroke()
+            /**/
 
             let dx = players[i].x - (canvas.width - canvas.height / 2);
             let dy = players[i].y - canvas.height / 2;
@@ -253,6 +258,7 @@ function createPlayer() {
     var player = {
         id: players.length,
         alive: true,
+        trail: [],
         x: spawnX,
         y: spawnY,
         a: Math.PI / 2,
