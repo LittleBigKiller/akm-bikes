@@ -5,75 +5,50 @@ var currentLap = 0
 var maxLaps = 3
 var img_src = ['img/2.png']
 var players = []
-var p0Key = 37
-var p1Key = 65
-var p2Key = 70
-var p3Key = 74
+var p0Key = 'ArrowLeft'
+var p1Key = 'KeyA'
+var p2Key = 'KeyF'
+var p3Key = 'KeyJ'
 
 var pat = new Image()
 pat.src = 'img/pat_grass.jpg'
 var pat_grass = null
 
+let gameOver = false
+let winner = null
+
 //#region Key Definitions
 window.onkeydown = function(e) {
-    if (e.keyCode == p0Key && players[0] != undefined) {
+    if (e.code == p0Key && players[0] != undefined) {
         e.preventDefault()
         players[0].turnL = true
     }
-    if (e.keyCode == p1Key && players[1] != undefined) {
+    if (e.code == p1Key && players[1] != undefined) {
         e.preventDefault()
         players[1].turnL = true
     }
-    if (e.keyCode == p2Key && players[2] != undefined) {
+    if (e.code == p2Key && players[2] != undefined) {
         e.preventDefault()
         players[2].turnL = true
     }
-    if (e.keyCode == p3Key && players[3] != undefined) {
+    if (e.code == p3Key && players[3] != undefined) {
         e.preventDefault()
         players[3].turnL = true
     }
-    /* if (e.keyCode == 39 && players[0] != undefined) {
-        e.preventDefault()
-        players[0].turnR = true
-    }
-    if (e.keyCode == 68 && players[1] != undefined) {
-        e.preventDefault()
-        players[1].turnR = true
-    }
-    if (e.keyCode == 76 && players[2] != undefined) {
-        e.preventDefault()
-        players[2].turnR = true
-    }
-    if (e.keyCode == 102 && players[3] != undefined) {
-        e.preventDefault()
-        players[3].turnR = true
-    } */
 }
 window.onkeyup = function(e) {
-    if (e.keyCode == p0Key && players[0] != undefined) {
+    if (e.code == p0Key && players[0] != undefined) {
         players[0].turnL = false
     }
-    if (e.keyCode == p1Key && players[1] != undefined) {
+    if (e.code == p1Key && players[1] != undefined) {
         players[1].turnL = false
     }
-    if (e.keyCode == p2Key && players[2] != undefined) {
+    if (e.code == p2Key && players[2] != undefined) {
         players[2].turnL = false
     }
-    if (e.keyCode == p3Key && players[3] != undefined) {
+    if (e.code == p3Key && players[3] != undefined) {
         players[3].turnL = false
     }
-    /* if (e.keyCode == 39 && players[0] != undefined) {
-        players[0].turnR = false
-    }
-    if (e.keyCode == 68 && players[1] != undefined) {
-        players[1].turnR = false
-    }
-    if (e.keyCode == 76 && players[2] != undefined) {
-        players[2].turnR = false
-    }
-    if (e.keyCode == 102 && players[3] != undefined) {
-        players[3].turnR = false
-    } */
 }
 //#endregion
 
@@ -90,10 +65,10 @@ window.onload = function() {
     let key3 = document.getElementById('pregame-p3Key')
     let keyAlert = document.getElementById('pregame-alert')
 
-    key0.innerHTML = 'Player 0 Key: ' + String.fromCharCode(p0Key)
-    key1.innerHTML = 'Player 1 Key: ' + String.fromCharCode(p1Key)
-    key2.innerHTML = 'Player 2 Key: ' + String.fromCharCode(p2Key)
-    key3.innerHTML = 'Player 3 Key: ' + String.fromCharCode(p3Key)
+    key0.innerHTML = 'Player 0 Key: ' + p0Key
+    key1.innerHTML = 'Player 1 Key: ' + p1Key
+    key2.innerHTML = 'Player 2 Key: ' + p2Key
+    key3.innerHTML = 'Player 3 Key: ' + p3Key
 
     key0.listen = false
     key1.listen = false
@@ -142,33 +117,32 @@ window.onload = function() {
     }
 
     document.onkeydown = function(e) {
-        console.log(e.keyCode)
         if (key0.listen || key1.listen || key2.listen || key3.listen) {
-            if (e.keyCode == 27 && (key0.listen || key1.listen || key2.listen || key3.listen) ) {
+            if (e.code == 'Escape' && (key0.listen || key1.listen || key2.listen || key3.listen) ) {
                 keyAlert.innerHTML = 'Canceled'
                 setTimeout(function() { keyAlert.innerHTML = '' }, 1000)
                 key0.listen = false
                 key1.listen = false
                 key2.listen = false
                 key3.listen = false
-                key0.innerHTML = 'Player0 Key: ' + String.fromCharCode(p0Key)
-                key1.innerHTML = 'Player1 Key: ' + String.fromCharCode(p1Key)
-                key2.innerHTML = 'Player2 Key: ' + String.fromCharCode(p2Key)
-                key3.innerHTML = 'Player3 Key: ' + String.fromCharCode(p3Key)
+                key0.innerHTML = 'Player 0 Key: ' + p0Key
+                key1.innerHTML = 'Player 1 Key: ' + p1Key
+                key2.innerHTML = 'Player 2 Key: ' + p2Key
+                key3.innerHTML = 'Player 3 Key: ' + p3Key
             } else {
-                if (e.keyCode != p0Key && e.keyCode != p1Key && e.keyCode != p2Key && e.keyCode != p3Key) {
+                if (e.code != p0Key && e.code != p1Key && e.code != p2Key && e.code != p3Key) {
                     if (key0.listen) {
-                        p0Key = e.keyCode
-                        key0.innerHTML = 'Player0 Key: ' + String.fromCharCode(p0Key)
+                        p0Key = e.code
+                        key0.innerHTML = 'Player 0 Key: ' + p0Key
                     } else if (key1.listen) {
-                        p1Key = e.keyCode
-                        key1.innerHTML = 'Player1 Key: ' + String.fromCharCode(p1Key)
+                        p1Key = e.code
+                        key1.innerHTML = 'Player 1 Key: ' + p1Key
                     } else if (key2.listen) {
-                        p2Key = e.keyCode
-                        key2.innerHTML = 'Player2 Key: ' + String.fromCharCode(p2Key)
+                        p2Key = e.code
+                        key2.innerHTML = 'Player 2 Key: ' + p2Key
                     } else if (key3.listen) {
-                        p3Key = e.keyCode
-                        key3.innerHTML = 'Player3 Key: ' + String.fromCharCode(p3Key)
+                        p3Key = e.code
+                        key3.innerHTML = 'Player 3 Key: ' + p3Key
                     }
                     key0.listen = false
                     key1.listen = false
@@ -178,10 +152,10 @@ window.onload = function() {
                 } else {
                     keyAlert.innerHTML = 'Key is already in use'
                     setTimeout(function() { keyAlert.innerHTML = '' }, 1000)
-                    key0.innerHTML = 'Player0 Key: ' + String.fromCharCode(p0Key)
-                    key1.innerHTML = 'Player1 Key: ' + String.fromCharCode(p1Key)
-                    key2.innerHTML = 'Player2 Key: ' + String.fromCharCode(p2Key)
-                    key3.innerHTML = 'Player3 Key: ' + String.fromCharCode(p3Key)
+                    key0.innerHTML = 'Player 0 Key: ' + p0Key
+                    key1.innerHTML = 'Player 1 Key: ' + p1Key
+                    key2.innerHTML = 'Player 2 Key: ' + p2Key
+                    key3.innerHTML = 'Player 3 Key: ' + p3Key
                     key0.listen = false
                     key1.listen = false
                     key2.listen = false
@@ -250,6 +224,8 @@ function drawMap() {
 
 function draw() {
     drawMap()
+    gameOver = false
+    winner = null
     for (let i in players) {
         if (players[i].alive) {
             ctx.fillStyle = players[i].color + '1F'
@@ -262,9 +238,7 @@ function draw() {
             players[i].draw()
 
             if (players[i].turnL)
-                players[i].updateVel(0.1)
-            if (players[i].turnR)
-                players[i].updateVel(-0.1)
+                players[i].updateVel(0.05)
             
             players[i].x += players[i].vx
             players[i].y += players[i].vy
@@ -285,8 +259,7 @@ function draw() {
                     players[i].alive = false
                     players[i].updateLapCounter()
                     if (players.length == 1) {
-                        window.alert('GAME OVER\n\nPress OK to restart')
-                        location.reload()
+                        gameOver = true
                     }
                     checkAlive()
                 }
@@ -295,8 +268,7 @@ function draw() {
                     players[i].alive = false
                     players[i].updateLapCounter()
                     if (players.length == 1) {
-                        window.alert('GAME OVER\n\nPress OK to restart')
-                        location.reload()
+                        gameOver = true
                     }
                     checkAlive()
                 }
@@ -332,8 +304,8 @@ function draw() {
                     players[i].check3 = false
                     players[i].lapCount += 1
                     if (players[i].lapCount > maxLaps) {
-                        window.alert('Player ' + players[i].id + ' wins!')
-                        location.reload()
+                        winner = players[i].id
+                        gameOver = true
                     } else {
                         players[i].updateLapCounter()
                     }
@@ -342,9 +314,26 @@ function draw() {
         } else {
             if (players[i].trail.length > 0) {
                 players[i].trail.pop()
+
+                ctx.fillStyle = players[i].color + '1F'
+                for (let j = 0; j < players[i].trail.length; j++) {
+                    ctx.beginPath()
+                    ctx.arc(players[i].trail[j].x, players[i].trail[j].y, imgSize - 2, 0, 2* Math.PI)
+                    ctx.fill()
+                }
+
                 players[i].draw()
             }
         }
+    }
+
+    if (gameOver) {
+        if (winner != null) {
+            window.alert('Player ' + winner + ' wins!')
+        } else {
+            window.alert('GAME OVER\n\nPress OK to restart')
+        }
+        location.reload()
     }
 
     window.requestAnimationFrame(draw)
@@ -369,7 +358,6 @@ function createPlayer() {
         check2: true,
         check3: true,
         turnL: false,
-        turnR: false,
         lapCount: 0,
         img: new Image(),
         updateVel: function (angle) {
@@ -430,16 +418,14 @@ function createPlayer() {
 }
 
 function checkAlive() {
-    let winnerId = -1
     let aliveCount = 0
     for (let i in players) {
         if (players[i].alive) {
-            winnerId = players[i].id
+            winner = players[i].id
             aliveCount += 1
         }
     }
     if (aliveCount == 1) {
-        window.alert('Player' + winnerId + ' wins!')
-        location.reload()
+        gameOver = true
     }
 }
