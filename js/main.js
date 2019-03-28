@@ -19,7 +19,8 @@ let winner = null
 
 //#region Key Definitions
 window.onkeydown = function(e) {
-    if (e.code == p0Key && players[0] != undefined) {
+    e.stopPropagation()
+    if (!e.code == p0Key && players[0] != undefined) {
         e.preventDefault()
         players[0].turnL = true
     }
@@ -37,6 +38,7 @@ window.onkeydown = function(e) {
     }
 }
 window.onkeyup = function(e) {
+    e.stopPropagation()
     if (e.code == p0Key && players[0] != undefined) {
         players[0].turnL = false
     }
@@ -178,10 +180,15 @@ function initGame(playerCount) {
 
     for (let i = 0; i < playerCount; i++)
         createPlayer()
+
+    document.onkeydown = null
     
-    drawMap()
+    //drawMap()
     draw()
+    //setInterval( "draw()", 10)
     window.alert('Press OK to start the race')
+
+    //isPointInPath
 }
 
 //#region Map Drawing
@@ -216,8 +223,8 @@ function drawMap() {
     ctx.strokeStyle = '#FFFFFF'
     ctx.lineWidth = 8
     ctx.beginPath()
-    ctx.moveTo(canvas.width - canvas.height / 2, 3 * canvas.height / 4 - 9)
-    ctx.lineTo(canvas.width - canvas.height / 2, canvas.height - 11)
+    ctx.moveTo(canvas.height / 2, 3 * canvas.height / 4 - 9)
+    ctx.lineTo(canvas.height / 2, canvas.height - 11)
     ctx.stroke()
 }
 //#endregion
@@ -228,11 +235,13 @@ function draw() {
     winner = null
     for (let i in players) {
         if (players[i].alive) {
-            ctx.fillStyle = players[i].color + '1F'
+            //ctx.fillStyle = players[i].color + '1F'
+            ctx.beginPath()
+            ctx.lineWidth = imgSize - 2
             for (let j = 0; j < players[i].trail.length; j++) {
-                ctx.beginPath()
-                ctx.arc(players[i].trail[j].x, players[i].trail[j].y, imgSize - 2, 0, 2* Math.PI)
-                ctx.fill()
+                ctx.strokeStyle = players[i].color + (64 - j).toString(16)
+                ctx.lineTo(players[i].trail[j].x, players[i].trail[j].y)
+                ctx.stroke()
             }
 
             players[i].draw()
@@ -244,14 +253,14 @@ function draw() {
             players[i].y += players[i].vy
 
             players[i].trail.unshift({x: players[i].x, y: players[i].y})
-            if (players[i].trail.length == 128) players[i].trail.pop()
+            if (players[i].trail.length == 64) players[i].trail.pop()
 
-            let dx = players[i].x - (canvas.width - canvas.height / 2);
-            let dy = players[i].y - canvas.height / 2;
+            /* let dx = players[i].x - (canvas.width - canvas.height / 2)
+            let dy = players[i].y - canvas.height / 2
             let dist0 = Math.sqrt(dx * dx + dy * dy)
 
-            dx = players[i].x - canvas.height / 2;
-            dy = players[i].y - canvas.height / 2;
+            dx = players[i].x - canvas.height / 2
+            dy = players[i].y - canvas.height / 2
             let dist1 = Math.sqrt(dx * dx + dy * dy)
 
             if (players[i].x > 368 && players[i].x < 912) {
@@ -272,7 +281,36 @@ function draw() {
                     }
                     checkAlive()
                 }
+            } */
+
+            ctx.beginPath()
+            ctx.arc(canvas.height / 2, canvas.height / 2, 170, Math.PI / 2, 3 * Math.PI / 2)
+            ctx.arc(canvas.width - canvas.height / 2, canvas.height / 2, 170, 3 * Math.PI / 2, Math.PI / 2)
+            ctx.closePath()
+            if (ctx.isPointInPath(players[i].x, players[i].y)) {
+                players[i].alive = false
+                players[i].updateLapCounter()
+                if (players.length == 1) {
+                    gameOver = true
+                }
+                checkAlive()
             }
+
+            ctx.beginPath()
+            ctx.arc(canvas.height / 2, canvas.height / 2, canvas.height / 2 - 10, Math.PI / 2, 3 * Math.PI / 2)
+            ctx.arc(canvas.width - canvas.height / 2, canvas.height / 2, canvas.height / 2 - 10, 3 * Math.PI / 2, Math.PI / 2)
+            ctx.closePath()
+            if (!ctx.isPointInPath(players[i].x, players[i].y)) {
+                players[i].alive = false
+                players[i].updateLapCounter()
+                if (players.length == 1) {
+                    gameOver = true
+                }
+                checkAlive()
+            }
+
+
+            
 
             if (players[i].x > 635 && players[i].x < 645 && players[i].doChecks) {
                 players[i].holdChecks()
@@ -294,7 +332,7 @@ function draw() {
                     console.log('Player ' + players[i].id + ' passed checkpoint 0')
                 }
             }
-            if (players[i].x > 915 && players[i].x < 925) {
+            if (players[i].x > 355 && players[i].x < 375) {
                 if (players[i].check0 && players[i].check1 && players[i].check2 && players[i].check3) {
                     if (players[i].lapCount != 0)
                         console.warn('Player ' + players[i].id + ' finished a lap')
@@ -314,12 +352,12 @@ function draw() {
         } else {
             if (players[i].trail.length > 0) {
                 players[i].trail.pop()
-
-                ctx.fillStyle = players[i].color + '1F'
+                ctx.beginPath()
+                ctx.lineWidth = imgSize - 2
                 for (let j = 0; j < players[i].trail.length; j++) {
-                    ctx.beginPath()
-                    ctx.arc(players[i].trail[j].x, players[i].trail[j].y, imgSize - 2, 0, 2* Math.PI)
-                    ctx.fill()
+                    ctx.strokeStyle = players[i].color + (64 - j).toString(16)
+                    ctx.lineTo(players[i].trail[j].x, players[i].trail[j].y)
+                    ctx.stroke()
                 }
 
                 players[i].draw()
@@ -341,7 +379,7 @@ function draw() {
 
 function createPlayer() {
     let velocity = 5
-    let spawnX = 900
+    let spawnX = 340
     let spawnY = 620
     document.getElementById('lap-counter-p' + players.length).style.display = 'block'
 
@@ -386,14 +424,8 @@ function createPlayer() {
         default:
             player.color = '#00000000'
     }
+    player.img.src = 'img/p' + player.id + '_base.png'
     player.draw = function() {
-        player.img.style.transform = 'rotate(' + player.a + 'rad)'
-        if (player.turnL || player.turnR) {
-            player.img.src = 'img/p' + player.id + '_left.png'
-        } else {
-            player.img.src = 'img/p' + player.id + '_base.png'
-        }
-
         ctx.translate(player.x, player.y) // zaznaczamy pozycję obrazka
         ctx.rotate(-player.a) // o ile obrócić
         ctx.drawImage(player.img, -imgSize, -imgSize, 2 * imgSize, 2 * imgSize) // punkt na obrazku wokół którego obracamy
