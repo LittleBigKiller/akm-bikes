@@ -19,8 +19,9 @@ let winner = null
 
 //#region Key Definitions
 window.onkeydown = function(e) {
-    e.stopPropagation()
-    if (!e.code == p0Key && players[0] != undefined) {
+    //e.stopPropagation()
+    console.log('LEL')
+    if (e.code == p0Key && players[0] != undefined) {
         e.preventDefault()
         players[0].turnL = true
     }
@@ -38,7 +39,7 @@ window.onkeydown = function(e) {
     }
 }
 window.onkeyup = function(e) {
-    e.stopPropagation()
+    //e.stopPropagation()
     if (e.code == p0Key && players[0] != undefined) {
         players[0].turnL = false
     }
@@ -173,17 +174,19 @@ function initGame(playerCount) {
     canvas = document.getElementById('canvas')
     canvas.style.display = 'block'
     ctx = canvas.getContext('2d')
+
+    map = document.getElementById('map')
+    map.style.display = 'block'
+    map_ctx = map.getContext('2d')
     
-    pat_grass = ctx.createPattern(pat, 'repeat')
+    pat_grass = map_ctx.createPattern(pat, 'repeat')
 
     if (playerCount > 4) playerCount = 4
 
     for (let i = 0; i < playerCount; i++)
         createPlayer()
-
-    document.onkeydown = null
     
-    //drawMap()
+    drawMap()
     draw()
     //setInterval( "draw()", 10)
     window.alert('Press OK to start the race')
@@ -193,44 +196,44 @@ function initGame(playerCount) {
 
 //#region Map Drawing
 function drawMap() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-    ctx.strokeStyle = '#FFFFFF'
-    ctx.lineWidth = 8
+    map_ctx.clearRect(0, 0, map.width, map.height)
+    map_ctx.strokeStyle = '#FFFFFF'
+    map_ctx.lineWidth = 8
 
     // Poza drogą
-    ctx.fillStyle = pat_grass //'#55AA00'
-    ctx.fillRect(0,0, canvas.width, canvas.height)
+    map_ctx.fillStyle = pat_grass //'#55AA00'
+    map_ctx.fillRect(0,0, map.width, map.height)
     
     // Droga
-    ctx.fillStyle = '#888888'
-    ctx.beginPath()
-    ctx.arc(canvas.height / 2, canvas.height / 2, canvas.height / 2 - 10, Math.PI / 2, 3 * Math.PI / 2)
-    ctx.arc(canvas.width - canvas.height / 2, canvas.height / 2, canvas.height / 2 - 10, 3 * Math.PI / 2, Math.PI / 2)
-    ctx.closePath()
-    ctx.fill()
-    ctx.stroke()
+    map_ctx.fillStyle = '#888888'
+    map_ctx.beginPath()
+    map_ctx.arc(map.height / 2, map.height / 2, map.height / 2 - 10, Math.PI / 2, 3 * Math.PI / 2)
+    map_ctx.arc(map.width - map.height / 2, map.height / 2, map.height / 2 - 10, 3 * Math.PI / 2, Math.PI / 2)
+    map_ctx.closePath()
+    map_ctx.fill()
+    map_ctx.stroke()
 
     // Środek
-    ctx.fillStyle = pat_grass //'#55AA00'
-    ctx.beginPath()
-    ctx.arc(canvas.height / 2, canvas.height / 2, 170, Math.PI / 2, 3 * Math.PI / 2)
-    ctx.arc(canvas.width - canvas.height / 2, canvas.height / 2, 170, 3 * Math.PI / 2, Math.PI / 2)
-    ctx.closePath()
-    ctx.fill()
-    ctx.stroke()
+    map_ctx.fillStyle = pat_grass //'#55AA00'
+    map_ctx.beginPath()
+    map_ctx.arc(map.height / 2, map.height / 2, 170, Math.PI / 2, 3 * Math.PI / 2)
+    map_ctx.arc(map.width - map.height / 2, map.height / 2, 170, 3 * Math.PI / 2, Math.PI / 2)
+    map_ctx.closePath()
+    map_ctx.fill()
+    map_ctx.stroke()
 
     // Linia startu
-    ctx.strokeStyle = '#FFFFFF'
-    ctx.lineWidth = 8
-    ctx.beginPath()
-    ctx.moveTo(canvas.height / 2, 3 * canvas.height / 4 - 9)
-    ctx.lineTo(canvas.height / 2, canvas.height - 11)
-    ctx.stroke()
+    map_ctx.strokeStyle = '#FFFFFF'
+    map_ctx.lineWidth = 8
+    map_ctx.beginPath()
+    map_ctx.moveTo(map.height / 2, 3 * map.height / 4 - 9)
+    map_ctx.lineTo(map.height / 2, map.height - 11)
+    map_ctx.stroke()
 }
 //#endregion
 
 function draw() {
-    drawMap()
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
     gameOver = false
     winner = null
     for (let i in players) {
@@ -284,8 +287,8 @@ function draw() {
             } */
 
             ctx.beginPath()
-            ctx.arc(canvas.height / 2, canvas.height / 2, 170, Math.PI / 2, 3 * Math.PI / 2)
-            ctx.arc(canvas.width - canvas.height / 2, canvas.height / 2, 170, 3 * Math.PI / 2, Math.PI / 2)
+            ctx.arc(canvas.height / 2, canvas.height / 2, canvas.height / 4 + imgSize / 2, Math.PI / 2, 3 * Math.PI / 2)
+            ctx.arc(canvas.width - canvas.height / 2, canvas.height / 2, canvas.height / 4 + imgSize / 2, 3 * Math.PI / 2, Math.PI / 2)
             ctx.closePath()
             if (ctx.isPointInPath(players[i].x, players[i].y)) {
                 players[i].alive = false
@@ -297,8 +300,8 @@ function draw() {
             }
 
             ctx.beginPath()
-            ctx.arc(canvas.height / 2, canvas.height / 2, canvas.height / 2 - 10, Math.PI / 2, 3 * Math.PI / 2)
-            ctx.arc(canvas.width - canvas.height / 2, canvas.height / 2, canvas.height / 2 - 10, 3 * Math.PI / 2, Math.PI / 2)
+            ctx.arc(canvas.height / 2, canvas.height / 2, canvas.height / 2 - imgSize * 3 / 2, Math.PI / 2, 3 * Math.PI / 2)
+            ctx.arc(canvas.width - canvas.height / 2, canvas.height / 2, canvas.height / 2 - imgSize * 3 / 2, 3 * Math.PI / 2, Math.PI / 2)
             ctx.closePath()
             if (!ctx.isPointInPath(players[i].x, players[i].y)) {
                 players[i].alive = false
@@ -308,9 +311,6 @@ function draw() {
                 }
                 checkAlive()
             }
-
-
-            
 
             if (players[i].x > 635 && players[i].x < 645 && players[i].doChecks) {
                 players[i].holdChecks()
@@ -380,7 +380,7 @@ function draw() {
 function createPlayer() {
     let velocity = 5
     let spawnX = 340
-    let spawnY = 620
+    let spawnY = 560 + players.length * 40
     document.getElementById('lap-counter-p' + players.length).style.display = 'block'
 
     var player = {

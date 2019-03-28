@@ -8,8 +8,10 @@ h1 {
     margin-left: 20px;
 }
 
-#canvas {
-    margin: 20px;
+#canvas, #map {
+    position: absolute;
+    left: 20px;
+    top: 120px;
     border: 2px solid black;
 }
 
@@ -17,6 +19,7 @@ h1 {
     display: flex;
     align-content: space-around;
     width: 1320px;
+    height: 100px;
 }
 
 #lap-counter-container * {
