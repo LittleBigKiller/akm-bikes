@@ -20,7 +20,6 @@ let winner = null
 //#region Key Definitions
 window.onkeydown = function(e) {
     //e.stopPropagation()
-    console.log('LEL')
     if (e.code == p0Key && players[0] != undefined) {
         e.preventDefault()
         players[0].turnL = true
@@ -77,6 +76,11 @@ window.onload = function() {
     key1.listen = false
     key2.listen = false
     key3.listen = false
+
+    key0.onfocus = function () { this.blur() }
+    key1.onfocus = function () { this.blur() }
+    key2.onfocus = function () { this.blur() }
+    key3.onfocus = function () { this.blur() }
 
     key0.onclick = function() {
         key0.innerHTML = 'Player 0 Key: [Press Any Key]'
