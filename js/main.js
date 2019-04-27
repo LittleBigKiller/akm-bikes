@@ -66,6 +66,7 @@ window.onload = function() {
     let key2 = document.getElementById('pregame-p2Key')
     let key3 = document.getElementById('pregame-p3Key')
     let keyAlert = document.getElementById('pregame-alert')
+    let keyTimeout
 
     key0.innerHTML = 'Player 0 Key: ' + p0Key
     key1.innerHTML = 'Player 1 Key: ' + p1Key
@@ -84,35 +85,50 @@ window.onload = function() {
 
     key0.onclick = function() {
         key0.innerHTML = 'Player 0 Key: [Press Any Key]'
+        key1.innerHTML = 'Player 1 Key: ' + p1Key
+        key2.innerHTML = 'Player 2 Key: ' + p2Key
+        key3.innerHTML = 'Player 3 Key: ' + p3Key
         key0.listen = true
         key1.listen = false
         key2.listen = false
         key3.listen = false
 
         keyAlert.innerHTML = 'Press Esc to cancel'
-        setTimeout(function() { keyAlert.innerHTML = '' }, 1000)
+        clearTimeout(keyTimeout)
+        keyTimeout = setTimeout(function() { keyAlert.innerHTML = '' }, 1000)
     }
     key1.onclick = function() {
+        key0.innerHTML = 'Player 0 Key: ' + p0Key
         key1.innerHTML = 'Player 1 Key: [Press Any Key]'
+        key2.innerHTML = 'Player 2 Key: ' + p2Key
+        key3.innerHTML = 'Player 3 Key: ' + p3Key
         key0.listen = false
         key1.listen = true
         key2.listen = false
         key3.listen = false
 
         keyAlert.innerHTML = 'Press Esc to cancel'
-        setTimeout(function() { keyAlert.innerHTML = '' }, 1000)
+        clearTimeout(keyTimeout)
+        keyTimeout = setTimeout(function() { keyAlert.innerHTML = '' }, 1000)
     }
     key2.onclick = function() {
+        key0.innerHTML = 'Player 0 Key: ' + p0Key
+        key1.innerHTML = 'Player 1 Key: ' + p1Key
         key2.innerHTML = 'Player 2 Key: [Press Any Key]'
+        key3.innerHTML = 'Player 3 Key: ' + p3Key
         key0.listen = false
         key1.listen = false
         key2.listen = true
         key3.listen = false
 
         keyAlert.innerHTML = 'Press Esc to cancel'
-        setTimeout(function() { keyAlert.innerHTML = '' }, 1000)
+        clearTimeout(keyTimeout)
+        keyTimeout = setTimeout(function() { keyAlert.innerHTML = '' }, 1000)
     }   
     key3.onclick = function() {
+        key0.innerHTML = 'Player 0 Key: ' + p0Key
+        key1.innerHTML = 'Player 1 Key: ' + p1Key
+        key2.innerHTML = 'Player 2 Key: ' + p2Key
         key3.innerHTML = 'Player 3 Key: [Press Any Key]'
         key0.listen = false
         key1.listen = false
@@ -120,14 +136,16 @@ window.onload = function() {
         key3.listen = true
 
         keyAlert.innerHTML = 'Press Esc to cancel'
-        setTimeout(function() { keyAlert.innerHTML = '' }, 1000)
+        clearTimeout(keyTimeout)
+        keyTimeout = setTimeout(function() { keyAlert.innerHTML = '' }, 1000)
     }
 
     document.onkeydown = function(e) {
         if (key0.listen || key1.listen || key2.listen || key3.listen) {
             if (e.code == 'Escape' && (key0.listen || key1.listen || key2.listen || key3.listen) ) {
                 keyAlert.innerHTML = 'Canceled'
-                setTimeout(function() { keyAlert.innerHTML = '' }, 1000)
+                clearTimeout(keyTimeout)
+                keyTimeout = setTimeout(function() { keyAlert.innerHTML = '' }, 1000)
                 key0.listen = false
                 key1.listen = false
                 key2.listen = false
@@ -158,7 +176,8 @@ window.onload = function() {
                     keyAlert.innerHTML = ''
                 } else {
                     keyAlert.innerHTML = 'Key is already in use'
-                    setTimeout(function() { keyAlert.innerHTML = '' }, 1000)
+                    clearTimeout(keyTimeout)
+                    keyTimeout = setTimeout(function() { keyAlert.innerHTML = '' }, 1000)
                     key0.innerHTML = 'Player 0 Key: ' + p0Key
                     key1.innerHTML = 'Player 1 Key: ' + p1Key
                     key2.innerHTML = 'Player 2 Key: ' + p2Key
